@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notification-ms
+  namespace: default
+data:
+  SMTP_AUTH: true
+  # AUTHENTICATE_SERVICE: authentication-service.default.svc.cluster.local:8080

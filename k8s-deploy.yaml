@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-ms
+  labels:
+    app: notification-ms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-ms
+  template:
+    metadata:
+      labels:
+        app: notification-ms
+    spec:
+      containers:
+        - name: notification-ms
+          image: islamahmad/eaproj-notficationms:1.0.0
+          env:
+           - name: SMTP_AUTH
+             valueFrom:
+               configMapKeyRef:
+                 name: notification-ms
+                 key: SMTP_AUTH
+           - name: SERVICE_API_KEY
+             valueFrom:
+               configMapKeyRef:
+                 name: notification-ms
+                 key: SERVICE_API_KEY
+           - name: JWT_SECRET
+             valueFrom:
+               configMapKeyRef:
+                 name: notification-ms
+                 key: JWT_SECRET
+           - name: MYSQL_PORT
+             valueFrom:
+               configMapKeyRef:
+                 name: notification-ms
+                 key: MYSQL_PORT
+           - name: MYSQL_USER
+             valueFrom:
+               configMapKeyRef:
+                 name: notification-ms
+                 key: MYSQL_USER
+           - name: MYSQL_HOST
+             valueFrom:
+               configMapKeyRef:
+                 name: notification-ms
+                 key: MYSQL_HOST

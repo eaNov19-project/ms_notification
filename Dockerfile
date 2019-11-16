@@ -1,4 +1,4 @@
 FROM openjdk:8-jdk-alpine
-ADD target/ms_notification.jar ms_notification.jar
-EXPOSE 8081
-ENTRYPOINT ["java","-jar","ms_notification.jar"]
+EXPOSE 8080
+ADD target/ms_notification.jar app.jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]

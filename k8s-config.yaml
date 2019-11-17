@@ -4,5 +4,11 @@ metadata:
   name: notification-ms
   namespace: default
 data:
+  MAIL_HOST: smtp.gmail.com
+  MAIL_PORT: "587"
+  MAIL_USERNAME: springbootmum@gmail.com
   SMTP_AUTH: true
-  # AUTHENTICATE_SERVICE: authentication-service.default.svc.cluster.local:8080
+  SMTP_CONNECTIONTIMEOUT: "5000"
+  SMTP_TIMEOUT: "5000"
+  SMTP_WRITETIMEOUT: "5000"
+  SMTP_STARTTLS_ENABLE: true

@@ -18,6 +18,8 @@ spec:
         - name: notification-ms
           image: islamahmad/eaproj-notficationms:1.0.0
           env:
+            - name: SERVER_PORT
+              value: "8080"
            - name: MAIL_HOST
              valueFrom:
                configMapKeyRef:

@@ -21,6 +21,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>ea.sof</groupId>
+            <artifactId>shared</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-rest</artifactId>
         </dependency>
@@ -39,6 +44,18 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!--Kafka -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+        </dependency>
+        <!--END Kafka-->
     </dependencies>
 
     <build>

@@ -12,3 +12,4 @@ data:
   SMTP_TIMEOUT: "5000"
   SMTP_WRITETIMEOUT: "5000"
   SMTP_STARTTLS_ENABLE: true
+  QUESTIONS_SERVICE: "question-ms-service.default:8080"

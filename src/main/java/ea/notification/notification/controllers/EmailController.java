@@ -17,7 +17,17 @@ public class EmailController {
 
     @Autowired
     private JavaMailSender javaMailSender;
-
+    /* should be kafka listener
+    * for now, make it parameteized post request
+    * will get the question ID
+    * then
+    * get question's followers
+    * loop through the followers
+    * Subject : Followed Question recevied an answer
+    * Body: Question ...... (insert question body )
+    *       Got
+    *       .... (insert answer body)
+    * */
     @GetMapping("/send")
     public void sendEmails() {
         List<String> followerList = new ArrayList<>();

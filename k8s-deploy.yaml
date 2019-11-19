@@ -18,50 +18,82 @@ spec:
         - name: notification-ms
           image: islamahmad/eaproj-notficationms:1.0.0
           env:
+            # GENERAL
             - name: SERVER_PORT
               value: "8080"
-           - name: MAIL_HOST
-             valueFrom:
-               configMapKeyRef:
-                 name: notification-ms
-                 key: MAIL_HOST
-           - name: MAIL_PORT
-             valueFrom:
-               configMapKeyRef:
-                 name: notification-ms
-                 key: MAIL_PORT
-           - name: MAIL_USERNAME
-             valueFrom:
-               configMapKeyRef:
-                 name: notification-ms
-                 key: MAIL_USERNAME
-           - name: MAIL_PASSWORD
-             valueFrom:
-               secretKeyRef:
-                 name: notification-ms
-                 key: MAIL_PASSWORD
-           - name: SMTP_AUTH
-             valueFrom:
-               configMapKeyRef:
-                 name: notification-ms
-                 key: SMTP_AUTH
-           - name: SMTP_CONNECTIONTIMEOUT
-             valueFrom:
-               configMapKeyRef:
-                 name: notification-ms
-                 key: SMTP_CONNECTIONTIMEOUT
-           - name: SMTP_TIMEOUT
-               valueFrom:
-                 configMapKeyRef:
-                   name: notification-ms
-                   key: SMTP_TIMEOUT
-           - name: SMTP_WRITETIMEOUT
-               valueFrom:
-                 configMapKeyRef:
-                   name: notification-ms
-                   key: SMTP_WRITETIMEOUT
-           - name: SMTP_STARTTLS_ENABLE
-               valueFrom:
-                 configMapKeyRef:
-                   name: notification-ms
-                   key: SMTP_STARTTLS_ENABLE
+            - name: SERVICE_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: services-global
+                  key: SERVICE_SECRET
+
+            # SERVICE DISCOVERY
+            - name: QUESTIONS_SERVICE
+              valueFrom:
+                configMapKeyRef:
+                  name: services-global
+                  key: QUESTIONS_SERVICE
+
+            #KAFKA
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: services-global
+                  key: KAFKA_BOOTSTRAP_SERVERS
+            - name: TOPIC_NEW_ANSWER
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-global
+                  key: TOPIC_NEW_ANSWER
+            - name: SUBS_NEW_ANSWER_NOTIFICATION
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-global
+                  key: SUBS_NEW_ANSWER_NOTIFICATION
+
+            # MAILING
+            - name: MAIL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: notification-ms
+                  key: MAIL_HOST
+            - name: MAIL_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: notification-ms
+                  key: MAIL_PORT
+            - name: MAIL_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: notification-ms
+                  key: MAIL_USERNAME
+            - name: MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: notification-ms
+                  key: MAIL_PASSWORD
+            - name: SMTP_AUTH
+              valueFrom:
+                configMapKeyRef:
+                  name: notification-ms
+                  key: SMTP_AUTH
+            - name: SMTP_CONNECTIONTIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: notification-ms
+                  key: SMTP_CONNECTIONTIMEOUT
+            - name: SMTP_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: notification-ms
+                  key: SMTP_TIMEOUT
+            - name: SMTP_WRITETIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: notification-ms
+                  key: SMTP_WRITETIMEOUT
+            - name: SMTP_STARTTLS_ENABLE
+              valueFrom:
+                configMapKeyRef:
+                  name: notification-ms
+                  key: SMTP_STARTTLS_ENABLE

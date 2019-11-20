@@ -1,5 +1,5 @@
 DOCKERHUBREPO=islamahmad
-IMAGE=${DOCKERHUBREPO}/eaproj-notficationms:1.0.7
+IMAGE=${DOCKERHUBREPO}/eaproj-notficationms:1.0.11
 
 # ===== Maven =====
 maven-rebuild:
@@ -24,5 +24,5 @@ k8-install:
 k8-delete:
 	kubectl delete -f k8s-deploy.yaml
 
-k8-repush-restart: k8-delete docker-push k8-install
+k8-repush-restart: docker-push k8-delete k8-install
 

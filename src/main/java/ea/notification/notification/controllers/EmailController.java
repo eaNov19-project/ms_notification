@@ -1,5 +1,6 @@
 package ea.notification.notification.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import ea.sof.shared.models.*;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import java.util.Map;
 import java.util.Set;
 
 
@@ -33,7 +35,7 @@ public class EmailController {
 	private Environment env;
 
 	@HystrixCommand(fallbackMethod = "fallback")
-	public ResponseEntity<QuestionFollowers> getFollowers(String questionId) {
+	public ResponseEntity<Response> getFollowers(String questionId) {
 		LOGGER.info("Trying to access questionsService...");
 		return questionsService.getFollowersByQuestionId(questionId, env.getProperty("service-secret"));
 	}
@@ -49,7 +51,7 @@ public class EmailController {
 	public void newAnswer(String message) {
 		LOGGER.info("New message from topic: " + message);
 
-        AnswerQueueModel answer = new AnswerQueueModel();
+		AnswerQueueModel answer = new AnswerQueueModel();
 		try {
 			Gson gson = new Gson();
 			answer = gson.fromJson(message, AnswerQueueModel.class);
@@ -58,13 +60,20 @@ public class EmailController {
 			LOGGER.error("newQuestion :: Failed to convert JSON to object: " + ex.getMessage());
 		}
 
-		ResponseEntity<QuestionFollowers> followersByQuestionId = getFollowers(answer.getQuestionId());
-		if (followersByQuestionId.getStatusCode() != HttpStatus.OK) {
-			LOGGER.error("ERROR retrieving data from questions service. " + followersByQuestionId.getStatusCode());
+		ResponseEntity<Response> followersByQuestionId = getFollowers(answer.getQuestionId());
+		if (followersByQuestionId.getStatusCode() != HttpStatus.OK || followersByQuestionId.getBody() == null) {
+			LOGGER.error("ERROR retrieving data from questions service.");
 			return;
 		}
 
-		sendEmails(followersByQuestionId.getBody().getFollowerEmails());
+		if (!followersByQuestionId.getBody().getSuccess()){
+			LOGGER.error(followersByQuestionId.getBody().getMessage());
+			return;
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		QuestionFollowers questionFollowers = mapper.convertValue(followersByQuestionId.getBody().getValue(), QuestionFollowers.class);
+
+		sendEmails(questionFollowers.getFollowerEmails());
 	}
 
 
@@ -81,23 +90,30 @@ public class EmailController {
 	 * */
 	public void sendEmails(Set<String> followerList) {
 
-		StringBuilder SendTo = new StringBuilder();
-		for (String u : followerList) {
-			if (isValidEmail(u)) {
-				SendTo.append(u).append(',');
+		boolean followers = false;
+		for (String email : followerList) {
+			followers = true;
+
+			if (isValidEmail(email)) {
+				// Trying send email
+				try {
+					LOGGER.info("Sending message to: " + email);
+
+					SimpleMailMessage msg = new SimpleMailMessage();
+					msg.setTo(email);
+					msg.setSubject("New Answer Added");
+					msg.setText("Hi,\nDear User, A new answer is added.\nCheck out website to see details");
+
+					javaMailSender.send(msg);
+				} catch (Exception ex) {
+					LOGGER.warn("Can not send. Incorrect email: " + email);
+				}
+			} else {
+				LOGGER.warn("Can not send. Incorrect email: " + email);
 			}
 		}
-		if (!SendTo.toString().equals("")) {
-			LOGGER.info("Sending message to: " + SendTo.toString());
 
-			SimpleMailMessage msg = new SimpleMailMessage();
-			msg.setTo(SendTo.toString());
-
-			msg.setSubject("New Answer Added");
-			msg.setText("Hi,\nDear User, A new answer is added.\nCheck out website to see details");
-
-			javaMailSender.send(msg);
-		} else {
+		if (!followers) {
 			LOGGER.info("No followers to send emails");
 		}
 	}

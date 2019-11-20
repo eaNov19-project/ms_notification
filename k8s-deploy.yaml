@@ -16,10 +16,10 @@ spec:
     spec:
       containers:
         - name: notification-ms
-          image: islamahmad/eaproj-notficationms:1.0.7
+          image: islamahmad/eaproj-notficationms:1.0.11
           env:
             - name: APP_VERSION
-              value: "islamahmad/eaproj-notficationms:1.0.7"
+              value: "islamahmad/eaproj-notficationms:1.0.11"
 
             # GENERAL
             - name: SERVER_PORT

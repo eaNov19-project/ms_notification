@@ -5,7 +5,7 @@ metadata:
   labels:
     app: notification-ms
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: notification-ms
@@ -16,84 +16,25 @@ spec:
     spec:
       containers:
         - name: notification-ms
-          image: islamahmad/eaproj-notficationms:1.0.0
+          image: islamahmad/eaproj-notficationms:1.0.7
           env:
+            - name: APP_VERSION
+              value: "islamahmad/eaproj-notficationms:1.0.7"
+
             # GENERAL
             - name: SERVER_PORT
               value: "8080"
-            - name: SERVICE_SECRET
-              valueFrom:
-                configMapKeyRef:
-                  name: services-global
-                  key: SERVICE_SECRET
 
-            # SERVICE DISCOVERY
-            - name: QUESTIONS_SERVICE
-              valueFrom:
-                configMapKeyRef:
-                  name: services-global
-                  key: QUESTIONS_SERVICE
-
-            #KAFKA
-            - name: KAFKA_BOOTSTRAP_SERVERS
-              valueFrom:
-                configMapKeyRef:
-                  name: services-global
-                  key: KAFKA_BOOTSTRAP_SERVERS
-            - name: TOPIC_NEW_ANSWER
-              valueFrom:
-                configMapKeyRef:
-                  name: kafka-global
-                  key: TOPIC_NEW_ANSWER
-            - name: SUBS_NEW_ANSWER_NOTIFICATION
-              valueFrom:
-                configMapKeyRef:
-                  name: kafka-global
-                  key: SUBS_NEW_ANSWER_NOTIFICATION
-
-            # MAILING
-            - name: MAIL_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: notification-ms
-                  key: MAIL_HOST
-            - name: MAIL_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: notification-ms
-                  key: MAIL_PORT
-            - name: MAIL_USERNAME
-              valueFrom:
-                configMapKeyRef:
-                  name: notification-ms
-                  key: MAIL_USERNAME
             - name: MAIL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: notification-ms
+                  name: notification-ms-secrets
                   key: MAIL_PASSWORD
-            - name: SMTP_AUTH
-              valueFrom:
-                configMapKeyRef:
-                  name: notification-ms
-                  key: SMTP_AUTH
-            - name: SMTP_CONNECTIONTIMEOUT
-              valueFrom:
-                configMapKeyRef:
-                  name: notification-ms
-                  key: SMTP_CONNECTIONTIMEOUT
-            - name: SMTP_TIMEOUT
-              valueFrom:
-                configMapKeyRef:
-                  name: notification-ms
-                  key: SMTP_TIMEOUT
-            - name: SMTP_WRITETIMEOUT
-              valueFrom:
-                configMapKeyRef:
-                  name: notification-ms
-                  key: SMTP_WRITETIMEOUT
-            - name: SMTP_STARTTLS_ENABLE
-              valueFrom:
-                configMapKeyRef:
-                  name: notification-ms
-                  key: SMTP_STARTTLS_ENABLE
+
+          envFrom:
+            - configMapRef:
+                name: notification-ms
+            - configMapRef:
+                name: services-global
+            - configMapRef:
+                name: kafka-global

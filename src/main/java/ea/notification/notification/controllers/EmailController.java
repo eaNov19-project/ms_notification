@@ -12,15 +12,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Set;
 
 
 @Service
-@RequestMapping("/email")
 public class EmailController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EmailController.class);
@@ -33,7 +35,6 @@ public class EmailController {
 
 	@Autowired
 	private Environment env;
-
 
 	@HystrixCommand(fallbackMethod = "fallback")
 	public ResponseEntity<QuestionFollowers> getFollowers(String questionId) {
@@ -50,7 +51,6 @@ public class EmailController {
 	//Answer(id=1029, body=Answer about java, date=null, upvotes=0, topComments=[], userId=123, userName=rustem.bayetov@gmail.com)
 	@KafkaListener(topics = "${topicNewAnswer}", groupId = "${subsNewAnswerNotification}")
 	public void newAnswer(String message) {
-		System.out.println("New message from topic: " + message);
 		LOGGER.info("New message from topic: " + message);
 
         AnswerQueueModel answer = new AnswerQueueModel();
@@ -87,7 +87,9 @@ public class EmailController {
 
 		StringBuilder SendTo = new StringBuilder();
 		for (String u : followerList) {
-			SendTo.append(u).append(',');
+			if (isValidEmail(u)) {
+				SendTo.append(u).append(',');
+			}
 		}
 		if (!SendTo.toString().equals("")) {
 			LOGGER.info("Sending message to: " + SendTo.toString());
@@ -102,5 +104,10 @@ public class EmailController {
 		} else {
 			LOGGER.info("No followers to send emails");
 		}
+	}
+
+	static boolean isValidEmail(String email) {
+		String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+		return email.matches(regex);
 	}
 }

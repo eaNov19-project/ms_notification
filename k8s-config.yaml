@@ -7,9 +7,8 @@ data:
   MAIL_HOST: smtp.gmail.com
   MAIL_PORT: "587"
   MAIL_USERNAME: springbootmum@gmail.com
-  SMTP_AUTH: true
+  SMTP_AUTH: "true"
   SMTP_CONNECTIONTIMEOUT: "5000"
   SMTP_TIMEOUT: "5000"
   SMTP_WRITETIMEOUT: "5000"
-  SMTP_STARTTLS_ENABLE: true
-  QUESTIONS_SERVICE: "question-ms-service.default:8080"
+  SMTP_STARTTLS_ENABLE: "true"

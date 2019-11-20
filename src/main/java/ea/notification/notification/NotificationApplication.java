@@ -19,7 +19,7 @@ public class NotificationApplication {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EmailController.class);
 
-    @Value("${APP_VERSION}")
+    @Value("${app.version}")
     private static String appVersion;
 
 
